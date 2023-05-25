@@ -6,21 +6,41 @@ services:
       - 5002:5001
     restart: unless-stopped
     build:
-      context: ..
+      context: ./app_a
       dockerfile: ./docker/Dockerfile
     volumes:
-      - "../app_a:/app"
+      - "./app_a:/app"
     depends_on:
       - db
     command: "/app/docker/start.sh"
     environment:
       DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
+      DB_CREATE_TABLES: 1
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+
+  app_b:
+    image: app_b:local
+    ports:
+      - 5003:5001
+    restart: unless-stopped
+    build:
+      context: ./app_b
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - "./app_b:/app"
+    depends_on:
+      - db
+    command: "/app/docker/start.sh"
+    environment:
+      DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
+      DB_CREATE_TABLES: 1
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
   db:
     image: postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -29,9 +49,13 @@ services:
       - 5432:5432
     volumes:
       - pg_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   adminer:
     image: adminer
-    restart: always
+    restart: unless-stopped
     ports:
       - 8080:8080
+
+volumes:
+  pg_data:
