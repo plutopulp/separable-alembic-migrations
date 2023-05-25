@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "separable-alembic-migrations"
+version = "0.1.0"
+description = ""
+authors = ["YvanBuggy <yvan@mystic.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11, <4.0"
+alembic = "^1.11.1"
+sqlalchemy = "^2.0.15"
+fastapi = "^0.95.2"
+fastapi-sqlalchemy = "^0.2.1"
+psycopg2 = "^2.9.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
