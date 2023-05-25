@@ -9,6 +9,7 @@ packages = [{include = "separable_alembic_migrations"}]
 [tool.poetry.dependencies]
 python = "^3.9"
 alembic = "^1.11.1"
+sqlalchemy = "^2.0.15"
 
 
 [build-system]

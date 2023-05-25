@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  app_a:
+    image: app_a:local
+    ports:
+      - 5002:5001
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - "../app_a:/app"
+    depends_on:
+      - db
+    command: "/app/docker/start.sh"
+    environment:
+      DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_db
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
