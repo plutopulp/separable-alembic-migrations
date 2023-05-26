@@ -35,14 +35,13 @@ target_metadata = Base.metadata
 
 VERSION_CONFIG = dict(
     version_table="alembic_version",
-    version_table_schema="app_b",
+    version_table_schema="app_a",
 )
 
 
 def include_name(name, type_, parent_names):
-    print(name, type_, parent_names)
     if type_ == "schema":
-        return name in ["app_b"]
+        return name in ["app_a"]
     return True
 
 
@@ -80,7 +79,6 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    print("HERERERE\n")
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",

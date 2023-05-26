@@ -16,4 +16,3 @@ RUN apt update -y && apt upgrade -y \
     && poetry install \
     && apt purge -y --auto-remove build-essential libpq-dev
   
-RUN pip install uvicorn[standard]

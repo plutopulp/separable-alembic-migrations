@@ -2,17 +2,14 @@ version: "3.9"
 services:
   app_a:
     image: app_a:local
-    ports:
-      - 5002:5001
     restart: unless-stopped
     build:
       context: ./app_a
-      dockerfile: ./docker/Dockerfile
+      dockerfile: Dockerfile
     volumes:
       - "./app_a:/app"
     depends_on:
       - db
-    command: "/app/docker/start.sh"
     environment:
       DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
       DB_CREATE_TABLES: 1
@@ -21,17 +18,14 @@ services:
 
   app_b:
     image: app_b:local
-    ports:
-      - 5003:5001
     restart: unless-stopped
     build:
       context: ./app_b
-      dockerfile: ./docker/Dockerfile
+      dockerfile: Dockerfile
     volumes:
       - "./app_b:/app"
     depends_on:
       - db
-    command: "/app/docker/start.sh"
     environment:
       DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
       DB_CREATE_TABLES: 1
