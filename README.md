@@ -43,7 +43,18 @@ make upgrade-head app=TARGET_APP
 
 # Implementation details
 
-We ensure that any tables for a given app are attached to a DB schema, by configuration the metadata of the `Base` model:
+## Schema definitions
+
+For each application, we create a PostgreSQL schema. In the example, this is achieved by bind mounting an `init.sql` file, e.g.
+
+```SQL
+CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION postgres;
+CREATE SCHEMA IF NOT EXISTS billing AUTHORIZATION postgres;
+```
+
+to the postgres docker-compose service.
+
+We ensure that any tables for a given app are attached to their respective schema, by configuration the metadata of the `Base` model:
 
 ```python
 from sqlalchemy import MetaData
@@ -56,4 +67,31 @@ class Base(_Base):
     ...
     metadata = MetaData(schema=os.environ["DB_SCHEMA"])
     ...
+```
+
+where the `DB_SCHEMA` is defined in each apps' environment.
+
+## Migration configuration
+
+We want the various applications to be able to migrate their respective DB objects (attached to their schema), independently from each other.
+We also want to leverage the autogenerate feature of `alembic` to automatically generate the content of migration version files.
+`alembic` achieves this by inspecting the difference in the current state of the DB and the current model definitions inheriting from the `Base` model.
+
+```python
+MIGRATIONS_CONFIG = dict(
+    target_metadata=target_metadata,
+    version_table="alembic_version",
+    version_table_schema=DB_SCHEMA,
+    include_schemas=True,
+    include_name=include_name,
+)
+```
+
+where `DB_SCHEMA = os.environ["DB_SCHEMA"]`
+
+```python
+def include_name(name, type_, parent_names):
+    if type_ == "schema":
+        return name in [DB_SCHEMA]
+    return True
 ```

@@ -35,16 +35,20 @@ target_metadata = Base.metadata
 
 DB_SCHEMA = os.environ["DB_SCHEMA"]
 
-VERSION_CONFIG = dict(
-    version_table="alembic_version",
-    version_table_schema=DB_SCHEMA,
-)
-
 
 def include_name(name, type_, parent_names):
     if type_ == "schema":
         return name in [DB_SCHEMA]
     return True
+
+
+MIGRATIONS_CONFIG = dict(
+    target_metadata=target_metadata,
+    version_table="alembic_version",
+    version_table_schema=DB_SCHEMA,
+    include_schemas=True,
+    include_name=include_name,
+)
 
 
 def run_migrations_offline() -> None:
@@ -62,12 +66,9 @@ def run_migrations_offline() -> None:
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
-        target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
-        **VERSION_CONFIG,
-        include_schemas=True,
-        include_name=include_name
+        **MIGRATIONS_CONFIG,
     )
 
     with context.begin_transaction():
@@ -81,7 +82,6 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    print("HERERERE\n")
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
@@ -89,13 +89,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection,
-            target_metadata=target_metadata,
-            **VERSION_CONFIG,
-            include_schemas=True,
-            include_name=include_name
-        )
+        context.configure(connection=connection, **MIGRATIONS_CONFIG)
 
         with context.begin_transaction():
             context.run_migrations()
