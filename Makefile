@@ -3,7 +3,6 @@
 # Project name for the containers
 PROJECT_NAME := separable-migrations
 
-
 build:
 	docker-compose --project-name $(PROJECT_NAME) build
 
