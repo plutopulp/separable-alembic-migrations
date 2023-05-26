@@ -3,7 +3,7 @@ import random
 import string
 import uuid
 
-from sqlalchemy import Column, DateTime, String, func, MetaData
+from sqlalchemy import Column, DateTime, MetaData, String, func
 from sqlalchemy.orm import registry
 
 
