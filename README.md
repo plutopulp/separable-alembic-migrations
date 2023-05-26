@@ -76,6 +76,11 @@ where the `DB_SCHEMA` is defined in each apps' environment.
 We want the various applications to be able to migrate their respective DB objects (attached to their schema), independently from each other.
 We also want to leverage the autogenerate feature of `alembic` to automatically generate the content of migration version files.
 `alembic` achieves this by inspecting the difference in the current state of the DB and the current model definitions inheriting from the `Base` model.
+That means that by default, if we were to perform a revision attached to a `Base` for a particular app, all the tables associated with the other apps (other schemas) would be dropped.
+This is because the state of the DB will actually include these tables, but the tables won't exist under the target `Base`.
+Hence we need a way to configure the migrations such that only objects tied to a particular schema are considered as candidates to migrate.
+
+To achieve this we define the following configuration:
 
 ```python
 MIGRATIONS_CONFIG = dict(
@@ -87,7 +92,7 @@ MIGRATIONS_CONFIG = dict(
 )
 ```
 
-where `DB_SCHEMA = os.environ["DB_SCHEMA"]`
+where `DB_SCHEMA = os.environ["DB_SCHEMA"]` and the callback function:
 
 ```python
 def include_name(name, type_, parent_names):
@@ -95,3 +100,6 @@ def include_name(name, type_, parent_names):
         return name in [DB_SCHEMA]
     return True
 ```
+
+which will ensure only objects under the target schema are included.
+Note also that we have defined `version_table_schema=DB_SCHEMA` such that the actual `alembic_version` table responsible for tracking migrations lives on the `DB_SCHEMA` too.
