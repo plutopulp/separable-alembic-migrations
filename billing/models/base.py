@@ -1,3 +1,4 @@
+import os
 import random
 import string
 import uuid
@@ -35,7 +36,7 @@ class Base(_Base):
         nullable=False,
     )
 
-    metadata = MetaData(schema="app_b")
+    metadata = MetaData(schema=os.environ["DB_SCHEMA"])
 
     @classmethod
     def _generate_model_id(cls):

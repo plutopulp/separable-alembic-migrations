@@ -1,34 +1,34 @@
 version: "3.9"
 services:
-  app_a:
-    image: app_a:local
+  auth:
+    image: separable-mgrations/auth:local
     restart: unless-stopped
     build:
-      context: ./app_a
+      context: ./auth
       dockerfile: Dockerfile
     volumes:
-      - "./app_a:/app"
+      - "./auth:/app"
     depends_on:
       - db
     environment:
       DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
-      DB_CREATE_TABLES: 1
+      DB_SCHEMA: "auth"
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
-  app_b:
-    image: app_b:local
+  billing:
+    image: separable-mgrations/billing:local
     restart: unless-stopped
     build:
-      context: ./app_b
+      context: ./billing
       dockerfile: Dockerfile
     volumes:
-      - "./app_b:/app"
+      - "./billing:/app"
     depends_on:
       - db
     environment:
       DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
-      DB_CREATE_TABLES: 1
+      DB_SCHEMA: "billing"
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
