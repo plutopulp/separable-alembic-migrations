@@ -24,6 +24,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - "./billing:/app"
+      # In order to reference models from auth
+      - "./auth:/app/auth"
     depends_on:
       - db
     environment:
