@@ -10,6 +10,7 @@ class Subscription(Base):
 
     category = Column(String(64), nullable=False)
     price = Column(Integer, nullable=False)
+    user_subscriptions = relationship("UserSubscription", back_populates="subscription")
 
 
 class UserSubscription(Base):

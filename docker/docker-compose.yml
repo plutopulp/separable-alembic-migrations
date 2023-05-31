@@ -7,6 +7,7 @@ services:
     image: separable-migrations/auth:local
     volumes:
       - "../services/auth:/app"
+      - "../services/common:/app/common"
       - "../scripts:/app/scripts"
     depends_on:
       - db
@@ -20,9 +21,13 @@ services:
     image: separable-migrations/billing:local
     volumes:
       - "../services/billing:/app"
+      - "../services/common:/app/common"
       - "../scripts:/app/scripts"
       # In order to reference models from auth
       - "../services/auth/app/db:/app/auth/db"
+      # In order to reference models from auth
+      - "../services/auth/app/schemas:/app/auth/schemas"
+
     depends_on:
       - db
     ports:

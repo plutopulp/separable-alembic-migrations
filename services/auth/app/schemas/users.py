@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from .base import BaseModel
+from common.schemas.base import BaseModel
 
 
 class UserBase(BaseModel):

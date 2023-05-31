@@ -1,1 +1,1 @@
-from .subscriptions import Subscription
+from .subscriptions import Subscription, UserSubscription
