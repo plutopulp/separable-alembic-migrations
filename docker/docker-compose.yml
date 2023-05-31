@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  auth:
+    extends:
+      file: docker-compose.api.base.yml
+      service: api
+    image: separable-migrations/auth:local
+    volumes:
+      - "../services/auth:/app"
+      - "../scripts:/app/scripts"
+    depends_on:
+      - db
+    ports:
+      - 5008:5001
+
+  billing:
+    extends:
+      file: docker-compose.api.base.yml
+      service: api
+    image: separable-migrations/billing:local
+    volumes:
+      - "../services/billing:/app"
+      - "../scripts:/app/scripts"
+      # In order to reference models from auth
+      - "../services/auth/app/db:/app/auth/db"
+    depends_on:
+      - db
+    ports:
+      - 5009:5001
+
+  db:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_db
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+
+volumes:
+  pg_data:

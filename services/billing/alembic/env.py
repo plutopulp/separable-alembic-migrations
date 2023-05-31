@@ -23,7 +23,7 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from models.base import Base
+from app.db.models.base import Base
 
 target_metadata = Base.metadata
 
@@ -32,7 +32,7 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-DB_SCHEMA = os.environ["DB_SCHEMA"]
+DB_SCHEMA = os.environ["DB_SCHEMA_BILLING"]
 
 
 def include_name(name, type_, parent_names):

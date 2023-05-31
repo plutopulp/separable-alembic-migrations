@@ -36,7 +36,7 @@ class Base(_Base):
         nullable=False,
     )
 
-    metadata = MetaData(schema=os.environ["DB_SCHEMA"])
+    metadata = MetaData(schema=os.environ["DB_SCHEMA_AUTH"])
 
     @classmethod
     def _generate_model_id(cls):

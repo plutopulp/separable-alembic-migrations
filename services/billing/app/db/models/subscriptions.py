@@ -2,7 +2,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from .base import Base
-from auth.models.users import User
+from auth.db.models.users import User
 
 
 class Subscription(Base):

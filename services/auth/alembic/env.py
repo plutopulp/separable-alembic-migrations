@@ -32,7 +32,7 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-DB_SCHEMA = os.environ["DB_SCHEMA"]
+DB_SCHEMA = os.environ["DB_SCHEMA_AUTH"]
 
 
 def include_name(name, type_, parent_names):
