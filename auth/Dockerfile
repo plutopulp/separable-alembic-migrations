@@ -15,3 +15,12 @@ RUN apt update -y && apt upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
     && poetry install \
     && apt purge -y --auto-remove build-essential libpq-dev
+
+RUN pip install uvicorn[standard]
+
+# Create a non-privileged user for running the application server.
+RUN adduser --disabled-password uvicorn
+
+USER uvicorn
+
+COPY . /app

@@ -1,23 +1,28 @@
 version: "3.9"
 services:
   auth:
-    image: separable-mgrations/auth:local
+    image: separable-migrations/auth:local
     restart: unless-stopped
     build:
       context: ./auth
       dockerfile: Dockerfile
     volumes:
       - "./auth:/app"
+      - "./scripts:/app/scripts"
     depends_on:
       - db
+    command: "/app/scripts/start.sh"
+    ports:
+      - 5008:5001
     environment:
       DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
       DB_SCHEMA: "auth"
+      DB_CREATE_TABLES: 1
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
   billing:
-    image: separable-mgrations/billing:local
+    image: separable-migrations/billing:local
     restart: unless-stopped
     build:
       context: ./billing
@@ -28,6 +33,8 @@ services:
       - "./auth:/app/auth"
     depends_on:
       - db
+    # Keep the containing running doing nothing
+    command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
     environment:
       DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
       DB_SCHEMA: "billing"
