@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  api:
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    command: "/app/scripts/start.sh"
+    environment:
+      DB_CONNECTION_STRING: "postgresql://postgres:postgres@db:5432/test_db"
+      DB_SCHEMA_AUTH: "auth"
+      DB_SCHEMA_BILLING: "billing"
+      DB_CREATE_TABLES: 1
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1

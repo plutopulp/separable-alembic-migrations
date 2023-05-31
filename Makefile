@@ -1,25 +1,25 @@
-.PHONY: build start down teardown upgrade-head add-migration undo-migration
+.PHONY: build start down teardown migrate add-migration undo-migration
 
 # Project name for the containers
 PROJECT_NAME := separable-migrations
 
 build:
-	docker-compose --project-name $(PROJECT_NAME) build
+	docker-compose -f ./docker/docker-compose.yml --project-name $(PROJECT_NAME) build
 
-start-db: build
-	docker-compose --project-name $(PROJECT_NAME) up db adminer
+start: build
+	docker-compose -f ./docker/docker-compose.yml --project-name $(PROJECT_NAME) up
 
 stop:
-	docker-compose  --project-name $(PROJECT_NAME) down
+	docker-compose  -f ./docker/docker-compose.yml --project-name $(PROJECT_NAME) down
 
 teardown:
-	docker-compose --project-name $(PROJECT_NAME) down --volumes --remove-orphans
+	docker-compose -f ./docker/docker-compose.yml --project-name $(PROJECT_NAME) down --volumes --remove-orphans
 
-upgrade-head: 
-	docker-compose --project-name $(PROJECT_NAME) run --rm "$(app)" poetry run alembic upgrade head
+migrate: 
+	docker-compose --f ./docker/docker-compose.yml -project-name $(PROJECT_NAME) run --rm "$(svc)" alembic upgrade head
 
-revision: 
-	docker-compose --project-name $(PROJECT_NAME) run --rm "$(app)" poetry run alembic revision --autogenerate -m "$(m)"
+add-migration: 
+	docker-compose -f ./docker/docker-compose.yml --project-name $(PROJECT_NAME) run --rm "$(svc)" alembic revision --autogenerate -m "$(msg)"
 
 downgrade:
-	docker-compose --project-name $(PROJECT_NAME) run --rm "$(app)" poetry run alembic downgrade "$(n)"
+	docker-compose -f ./docker/docker-compose.yml --project-name $(PROJECT_NAME) run --rm "$(svc)" alembic downgrade "$(n)"
