@@ -1,8 +1,8 @@
+from auth.db.models.users import User
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from .base import Base
-from auth.db.models.users import User
 
 
 class Subscription(Base):

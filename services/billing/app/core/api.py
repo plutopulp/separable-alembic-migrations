@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi_sqlalchemy import DBSessionMiddleware
 
-from .settings import Settings
 from ..routes import router
+from .settings import Settings
 
 
 def create_app():
